@@ -5,14 +5,14 @@ import {
 } from '@nestjs/common';
 import { hash, compare } from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
-import { UserSignUpDto } from './dto/sign-up.dto';
+import { UserSignInDto, UserSignUpDto } from './dto/auth.dto';
 import { User } from '@prisma/client';
 import { UsersService } from '../users/users.service';
-import { UserSignInDto } from './dto/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
+import { CONSTANT } from 'src/common/constants';
 
 @Injectable()
-export class AuthService {
+class AuthService {
   constructor(
     private jwtService: JwtService,
     private readonly prisma: PrismaService,
@@ -24,9 +24,8 @@ export class AuthService {
     email,
     password,
   }: UserSignUpDto): Promise<User | void> {
-    const userExists = await this.userExists({ username, email });
-    if (userExists) {
-      throw new ConflictException('Username or email exists!');
+    if (await this.userExists({ username, email })) {
+      throw new ConflictException(CONSTANT.USERCONFLICT);
     }
 
     const passwordHash: string = await hash(password, 10);
@@ -38,17 +37,18 @@ export class AuthService {
     return newUser;
   }
 
-  async signIn({ identity, password }: UserSignInDto): Promise<any> {
+  async signIn({
+    identity,
+    password,
+  }: UserSignInDto): Promise<{ token: string }> {
     const user = await this.usersService.findOne(identity);
-    const isMatch = user ? await compare(password, user.passwordHash) : false;
-    if (!isMatch) {
+    if (!user || !(await compare(password, user.passwordHash))) {
       throw new UnauthorizedException();
     }
 
     const payload = { sub: user.id, username: user.username };
-    return {
-      token: await this.jwtService.signAsync(payload),
-    };
+    const token = await this.jwtService.signAsync(payload);
+    return { token };
   }
 
   async userExists({ email, username }: { username: string; email: string }) {
@@ -59,3 +59,5 @@ export class AuthService {
     return !!user;
   }
 }
+
+export default AuthService;
