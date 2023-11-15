@@ -20,6 +20,9 @@ export class UsersService {
   async findbyId(identity: string): Promise<User | undefined> {
     const user = await this.prisma.user.findUnique({
       where: { id: identity },
+      include: {
+        urls: true,
+      },
     });
 
     if (!user) {
