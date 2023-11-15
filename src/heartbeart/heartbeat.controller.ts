@@ -6,7 +6,7 @@ import { Public } from 'src/common/decorators/auth.public.decorator';
 
 @ApiTags('Heartbeat')
 @Controller('heartbeat')
-export class HeartbeatController {
+class HeartbeatController {
   @Public()
   @Get('/health')
   async heartbeat(@Req() req: Request) {
@@ -16,4 +16,4 @@ export class HeartbeatController {
   }
 }
 
-// export default HeartbeatController;
+export default HeartbeatController;
