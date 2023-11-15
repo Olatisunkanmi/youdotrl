@@ -9,18 +9,17 @@ import {
   Patch,
 } from '@nestjs/common';
 import { UrlService } from './urls.service';
-import { CreateShortUrlDto } from './dto/create-url.dto';
+import { CreateShortUrlDto , UpdateUrlDto} from './dto/url.dto';
 import { Url } from '@prisma/client';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ApiResponseMetadata } from '../common/decorators/response.decorator';
 import { Public } from '../common/decorators/auth.public.decorator';
 import { RequestUser } from '../common/interfaces';
-import { UpdateUrlDto } from './dto/update-url.dto';
 import { TagsService } from '../tags/tags.service';
 
 @ApiTags('URLs')
 @Controller()
-export class UrlController {
+class UrlController {
   constructor(
     private readonly urlService: UrlService,
     private tagService: TagsService,
@@ -80,4 +79,11 @@ export class UrlController {
   ) {
     return this.urlService.updateLink(linkId, updateDto, req);
   }
+
+  /**
+   * Fetch all Url created by a user
+   */
+  
 }
+
+export default UrlController;

@@ -1,11 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateShortUrlDto } from './dto/create-url.dto';
+import { CreateShortUrlDto, UpdateUrlDto } from './dto/url.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Url } from '@prisma/client';
 import { AppUtilities } from '../app.utilities';
 import { RequestUser } from '../common/interfaces';
 import { QrcodeService } from '../qrcode/qrcode.service';
-import { UpdateUrlDto } from './dto/update-url.dto';
 import { TagsService } from '../tags/tags.service';
 
 @Injectable()

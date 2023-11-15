@@ -1,7 +1,8 @@
 import { IsBoolean, IsOptional, IsString, IsUrl } from 'class-validator';
+import { PickType } from '@nestjs/swagger';
 
 export class CreateShortUrlDto {
-  @IsUrl({}, { message: 'Please use a valid URL' })
+  @IsUrl({}, { message: 'Please input a valid URL' })
   url: string;
 
   @IsString()
@@ -14,4 +15,14 @@ export class CreateShortUrlDto {
 
   @IsOptional()
   tags?: string[];
+}
+
+
+export class UpdateUrlDto extends PickType(CreateShortUrlDto, [
+  'tags',
+  'generateQrCode',
+]) {
+  @IsString()
+  @IsOptional()
+  customShortId?: string;
 }
