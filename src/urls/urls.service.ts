@@ -19,8 +19,17 @@ export class UrlService {
     { generateQrCode, tags, ...createUrlDto }: CreateShortUrlDto,
     { headers, user }: RequestUser,
   ) {
+
+    console.log(user);
     const shortId = AppUtilities.generateShortCode(7);
-    const shortUrl = `${headers.referer}${shortId}`;
+    // const shortUrl = `https://${headers.host}/${shortId}`;
+
+    if(createUrlDto.customDomain){
+      var shortUrl = `https://${headers.host}/${createUrlDto.customDomain}/${shortId}`
+    } else {
+      var shortUrl = `https://${headers.host}/${shortId}`;
+    }
+
     const qrCode = generateQrCode
       ? await this.qrCodeService.generateQrCode(shortUrl)
       : undefined;
@@ -34,6 +43,7 @@ export class UrlService {
         shortUrl,
         shortId,
         qrCode,
+        customDomain : createUrlDto.customDomain,
         createdBy: user.sub,
         userId: user.sub,
         ...(lTags && {
