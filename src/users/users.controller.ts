@@ -17,6 +17,15 @@ class UserControlller {
   async fetchUserById(@Param('id') userId: string, @Req() req: RequestUser) {
     return this.userServices.findbyId(userId);
   }
+
+  /**
+   * Find all users
+   */
+  @Public()
+  @Get('users/all')
+  async fetchAllUsers(@Req() req: RequestUser) {
+    return this.userServices.findall()
+  }
 }
 
 export default UserControlller;

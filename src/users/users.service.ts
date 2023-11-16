@@ -30,4 +30,16 @@ export class UsersService {
     }
     return user;
   }
+
+    /**
+  * Fetch all Url created by a user
+  */
+  async findall(): Promise<Array<User>| undefined> {
+    const users = await this.prisma.user.findMany({
+      include: {
+        urls: true
+      }
+    });
+    return users;
+  }
 }

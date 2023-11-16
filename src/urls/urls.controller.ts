@@ -9,7 +9,7 @@ import {
   Patch,
 } from '@nestjs/common';
 import { UrlService } from './urls.service';
-import { CreateShortUrlDto , UpdateUrlDto} from './dto/url.dto';
+import { CreateShortUrlDto, UpdateUrlDto } from './dto/url.dto';
 import { Url } from '@prisma/client';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ApiResponseMetadata } from '../common/decorators/response.decorator';
@@ -81,9 +81,16 @@ class UrlController {
   }
 
   /**
-   * Fetch all Url created by a user
+   * View link by Id
    */
-  
+  @Public()
+  @Get('link/:id')
+  async(
+    @Param('id') linkId: string,
+    @Req() req: RequestUser
+  ) {
+    return this.urlService.findOne(linkId);
+  }
 }
 
 export default UrlController;

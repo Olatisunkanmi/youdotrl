@@ -107,6 +107,20 @@ export class UrlService {
     });
   }
 
+  async findOne(linkId: string): Promise<Url | undefined> {
+    const url = await this.prisma.url.findFirst({
+      where: {
+        id: linkId,
+      },
+      include: {
+        creator: { select: { id: true, username: true } },
+        tags: { select: { name: true } },
+      },
+    });
+
+    return url;
+  }
+
   async shortIdExists(shortId: string) {
     return !!(await this.prisma.url.findFirst({
       where: { shortId },
