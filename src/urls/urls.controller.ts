@@ -7,6 +7,7 @@ import {
   Redirect,
   Req,
   Patch,
+  Logger,
 } from '@nestjs/common';
 import { UrlService } from './urls.service';
 import { CreateShortUrlDto, UpdateUrlDto } from './dto/url.dto';
@@ -64,6 +65,7 @@ class UrlController {
     @Body() createUrlDto: CreateShortUrlDto,
     @Req() req: RequestUser,
   ) {
+    Logger.log(createUrlDto);
     return this.urlService.createLink(createUrlDto, req);
   }
 
@@ -91,6 +93,8 @@ class UrlController {
   ) {
     return this.urlService.findOne(linkId);
   }
+
+  
 }
 
 export default UrlController;

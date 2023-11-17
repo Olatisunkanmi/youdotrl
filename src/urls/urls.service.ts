@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { CreateShortUrlDto, UpdateUrlDto } from './dto/url.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Url } from '@prisma/client';
@@ -20,14 +20,13 @@ export class UrlService {
     { headers, user }: RequestUser,
   ) {
 
-    console.log(user);
+    // console.log(user);
     const shortId = AppUtilities.generateShortCode(7);
-    // const shortUrl = `https://${headers.host}/${shortId}`;
 
     if(createUrlDto.customDomain){
       var shortUrl = `https://${headers.host}/${createUrlDto.customDomain}/${shortId}`
     } else {
-      var shortUrl = `https://${headers.host}/${shortId}`;
+      var shortUrl = `http://${headers.host}/${shortId}`;
     }
 
     const qrCode = generateQrCode
@@ -37,6 +36,7 @@ export class UrlService {
       ? tags.map((tag) => tag.toLowerCase())
       : undefined;
 
+    
     return await this.prisma.url.create({
       data: {
         longUrl: createUrlDto.url,
@@ -64,10 +64,13 @@ export class UrlService {
   }
 
   async redirectOrThrow(shortId: string) {
+    console.log(shortId);
+
     const url = await this.prisma.url.findFirstOrThrow({
       where: { shortId },
     });
 
+    console.log(url);
     return url.longUrl;
   }
 
